@@ -98,10 +98,13 @@ export default function AuthPage({
                                             color: "darkgray",
                                         }}
                                     >
-                                        <span style={{ color: "#0dcaf0" }}>
-                                            Uni
-                                        </span>
-                                        Events
+                                        <div>
+                                            <span style={{ color: "#0dcaf0" }}>
+                                                Uni
+                                            </span>
+                                            Events
+                                        </div>
+                                        <div style={{ fontSize: "x-small" }}>&#x27F5; back to home</div>
                                     </Link>
                                 </h1>
                                 <p className="text-muted">
