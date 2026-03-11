@@ -85,10 +85,12 @@ export default function AuthPage({
                         <Card className="border-0 shadow-lg p-4 rounded-4 auth-card">
                             <div className="text-center mb-4">
                                 <h1 className="fw-bold fs-2 mb-2">
-                                    <span style={{ color: "#0dcaf0" }}>
-                                        Uni
-                                    </span>
-                                    Events
+                                    <Link href="/" style={{ textDecoration: "none", color: "darkgray" }}>
+                                        <span style={{ color: "#0dcaf0" }}>
+                                            Uni
+                                        </span>
+                                        Events
+                                    </Link>
                                 </h1>
                                 <p className="text-muted">
                                     {view === "login"
