@@ -14,6 +14,7 @@ import {
 import supabase from "@/utils/supabase/client";
 // removed social login UI
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function AuthPage({
     view = "login",
@@ -24,6 +25,7 @@ export default function AuthPage({
     isAdmin?: boolean;
     redirectPath?: string;
 }) {
+    const router = useRouter();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
@@ -47,13 +49,17 @@ export default function AuthPage({
                     email,
                     password,
                     options: {
-                        emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(redirectPath)}`,
+                        emailRedirectTo: `${
+                            window.location.origin
+                        }/auth/callback?next=${encodeURIComponent(
+                            redirectPath
+                        )}`,
                     },
                 });
                 if (error) throw error;
 
                 if (data.session) {
-                    window.location.href = redirectPath;
+                    router.push(redirectPath);
                 } else {
                     setMessage("Check your email for the confirmation link!");
                 }
@@ -63,7 +69,7 @@ export default function AuthPage({
                     password,
                 });
                 if (error) throw error;
-                window.location.href = redirectPath;
+                router.push(redirectPath);
             }
         } catch (err: any) {
             setError(err.message);
@@ -85,7 +91,13 @@ export default function AuthPage({
                         <Card className="border-0 shadow-lg p-4 rounded-4 auth-card">
                             <div className="text-center mb-4">
                                 <h1 className="fw-bold fs-2 mb-2">
-                                    <Link href="/" style={{ textDecoration: "none", color: "darkgray" }}>
+                                    <Link
+                                        href="/"
+                                        style={{
+                                            textDecoration: "none",
+                                            color: "darkgray",
+                                        }}
+                                    >
                                         <span style={{ color: "#0dcaf0" }}>
                                             Uni
                                         </span>
@@ -174,8 +186,8 @@ export default function AuthPage({
                                     {loading
                                         ? "Processing..."
                                         : view === "login"
-                                            ? "Sign In"
-                                            : "Create Account"}
+                                        ? "Sign In"
+                                        : "Create Account"}
                                 </Button>
                             </Form>
 
@@ -205,15 +217,22 @@ export default function AuthPage({
                                             setResetLoading(true);
                                             setResetMessage(null);
                                             try {
-                                                const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
-                                                    redirectTo: `${window.location.origin}/reset-password`,
-                                                });
+                                                const { error } =
+                                                    await supabase.auth.resetPasswordForEmail(
+                                                        resetEmail,
+                                                        {
+                                                            redirectTo: `${window.location.origin}/reset-password`,
+                                                        }
+                                                    );
                                                 if (error) throw error;
                                                 setResetMessage(
                                                     "Check your email for password reset instructions."
                                                 );
                                             } catch (err: any) {
-                                                setResetMessage(err.message || "Failed to send reset email.");
+                                                setResetMessage(
+                                                    err.message ||
+                                                        "Failed to send reset email."
+                                                );
                                             } finally {
                                                 setResetLoading(false);
                                             }
@@ -227,7 +246,9 @@ export default function AuthPage({
                                                 type="email"
                                                 value={resetEmail}
                                                 onChange={(e) =>
-                                                    setResetEmail(e.target.value)
+                                                    setResetEmail(
+                                                        e.target.value
+                                                    )
                                                 }
                                                 required
                                             />
@@ -236,13 +257,21 @@ export default function AuthPage({
                                             <Button
                                                 variant="secondary"
                                                 className="me-2"
-                                                onClick={() => setShowResetModal(false)}
+                                                onClick={() =>
+                                                    setShowResetModal(false)
+                                                }
                                                 disabled={resetLoading}
                                             >
                                                 Close
                                             </Button>
-                                            <Button type="submit" variant="info" disabled={resetLoading}>
-                                                {resetLoading ? "Sending..." : "Send reset email"}
+                                            <Button
+                                                type="submit"
+                                                variant="info"
+                                                disabled={resetLoading}
+                                            >
+                                                {resetLoading
+                                                    ? "Sending..."
+                                                    : "Send reset email"}
                                             </Button>
                                         </div>
                                     </Form>
@@ -263,8 +292,8 @@ export default function AuthPage({
                                                     ? "/admin/signup"
                                                     : "/signup"
                                                 : isAdmin
-                                                    ? "/admin/login"
-                                                    : "/login"
+                                                ? "/admin/login"
+                                                : "/login"
                                         }
                                         className="text-info fw-bold text-decoration-none"
                                     >

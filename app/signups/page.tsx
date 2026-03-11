@@ -15,18 +15,12 @@ import {
     Form,
     Modal,
 } from "react-bootstrap";
-import {
-    Calendar,
-    MapPin,
-    Users,
-    Clock,
-    ArrowLeft,
-    CheckCircle2,
-    History,
-} from "lucide-react";
+import { Calendar, MapPin, Users, Clock, ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function SignupsPage() {
+    const router = useRouter();
     const [user, setUser] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [events, setEvents] = useState<any[]>([]);
@@ -35,21 +29,6 @@ export default function SignupsPage() {
     const [showDetails, setShowDetails] = useState(false);
 
     const supabase = createClient();
-
-    useEffect(() => {
-        const checkUser = async () => {
-            const {
-                data: { user },
-            } = await supabase.auth.getUser();
-            if (!user) {
-                window.location.href = "/login?redirect=/signups";
-                return;
-            }
-            setUser(user);
-            fetchMySignups(user.id);
-        };
-        checkUser();
-    }, []);
 
     const fetchMySignups = async (userId: string) => {
         setLoading(true);
@@ -89,9 +68,24 @@ export default function SignupsPage() {
         setLoading(false);
     };
 
+    useEffect(() => {
+        const checkUser = async () => {
+            const {
+                data: { user },
+            } = await supabase.auth.getUser();
+            if (!user) {
+                router.push("/login?redirect=/signups");
+                return;
+            }
+            setUser(user);
+            fetchMySignups(user.id);
+        };
+        checkUser();
+    }, [router, supabase.auth]);
+
     const handleLogout = async () => {
         await supabase.auth.signOut();
-        window.location.reload();
+        router.refresh();
     };
 
     const now = new Date();

@@ -17,6 +17,7 @@ import {
 } from "react-bootstrap";
 import { createClient } from "@/utils/supabase/client";
 import Link from "next/link";
+import { useRouter, usePathname } from "next/navigation";
 import {
     Calendar,
     MapPin,
@@ -35,6 +36,8 @@ import {
 import { QRCodeCanvas } from "qrcode.react";
 
 export default function Home() {
+    const router = useRouter();
+    const pathname = usePathname();
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
     const [selectedTags, setSelectedTags] = useState<string[]>([]);
@@ -131,11 +134,8 @@ export default function Home() {
 
     const handleSignup = async (event: any) => {
         if (!user) {
-            const currentPath =
-                window.location.pathname + window.location.search;
-            window.location.href = `/login?redirect=${encodeURIComponent(
-                currentPath
-            )}`;
+            const currentPath = pathname + window.location.search;
+            router.push(`/login?redirect=${encodeURIComponent(currentPath)}`);
             return;
         }
 
@@ -268,7 +268,7 @@ export default function Home() {
 
     const handleLogout = async () => {
         await supabase.auth.signOut();
-        window.location.reload();
+        router.refresh();
     };
 
     const handleClearFilters = () => {
@@ -288,7 +288,7 @@ export default function Home() {
         if (params.get("welcome") === "true") {
             setShowInterestsModal(true);
             // Clean URL
-            window.history.replaceState({}, "", "/");
+            router.replace("/", { scroll: false });
         }
     }, []);
 
